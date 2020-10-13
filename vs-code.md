@@ -1,21 +1,21 @@
 5 features vscode
 
-Instellisense
-peek
-cli
-built in git
-task runner
+Instellisense,
+peek,
+cli,
+built in git,
+task runner,
 
 8 useful plugins vscode
 
-live server
-tabnine
-liveshare
-quokka.js
-code spell checker
-auto close tag
-gitlens
-github extension
+live server,
+tabnine,
+liveshare,
+quokka.js,
+code spell checker,
+auto close tag,
+gitlens,
+github extension,
 
 
 VSCode doesn't offer any built-in interface for opening files directly in the browser. This extension adds a Open With Default Browser item to the contextual menu, as well as command palette options for opening in a client of your choice (Firefox, Chrome, IE).
