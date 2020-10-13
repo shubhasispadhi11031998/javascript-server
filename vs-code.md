@@ -5,6 +5,7 @@ peek
 cli
 built in git
 task runner
+
 8 useful plugins vscode
 
 live server
@@ -15,6 +16,8 @@ code spell checker
 auto close tag
 gitlens
 github extension
+
+
 VSCode doesn't offer any built-in interface for opening files directly in the browser. This extension adds a Open With Default Browser item to the contextual menu, as well as command palette options for opening in a client of your choice (Firefox, Chrome, IE).
 
 Quokka is a debugging tool that gives live feedback on the code you are writing. It shows you previews of the results of functions and calculated values for variables. The extension is easy to configure and works out of the box with JSX or TypeScript projects.
