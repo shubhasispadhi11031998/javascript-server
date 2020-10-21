@@ -18,33 +18,31 @@ let users =
         }
     ];
 let emailregex = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-let vldUser = "", inVldUser = "", count1 = 0, count2 = 0;
 function validateEmail(email) {
     return emailregex.test(String(email).toLowerCase());
 }
 
-
-validateUsers();
-
-
 function validateUsers() {
-    
-
+    let validUser = [], invalidUser = [], count1 = 0, count2 = 0;
     users.forEach((element, index) => {
         let { traineeEmail, reviewerEmail } = element;
         if (validateEmail(traineeEmail) && validateEmail(reviewerEmail)) {
-            vldUser += "(" + traineeEmail + " , " + reviewerEmail + ") ";
+            validUser.push("(" + traineeEmail + " , " + reviewerEmail + ")");
             count1++;
         }
         else {
-            inVldUser += "(" + traineeEmail + " , " + reviewerEmail + ") ";
+            invalidUser.push("(" + traineeEmail + " , " + reviewerEmail + ") ");
             count2++;
         }
     });
-
-    console.log("Total valid users : ", count1);
-    console.log("valid users are : ", vldUser);
-    console.log("Total Invalid users : ", count2);
-    console.log("Invalid users are : ", inVldUser);
-
+    const finalvaliduser = Object.assign({}, validUser);
+    const finalinvaliduser = Object.assign({}, invalidUser)
+    const printuser = {
+        validcount: count1,
+        totalvaliduser: finalvaliduser,
+        invalidcount: count2,
+        totalinvaliduser: finalinvaliduser
+    };
+    console.log(printuser);
 }
+validateUsers();
