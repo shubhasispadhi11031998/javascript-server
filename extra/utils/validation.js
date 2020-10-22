@@ -27,14 +27,16 @@ function validateUsers() {
     users.forEach((element, index) => {
         let { traineeEmail, reviewerEmail } = element;
         if (validateEmail(traineeEmail) && validateEmail(reviewerEmail)) {
-            validUser.push("(" + traineeEmail + " , " + reviewerEmail + ")");
-            count1++;
+            validUser.push(element);     
         }
         else {
-            invalidUser.push("(" + traineeEmail + " , " + reviewerEmail + ") ");
-            count2++;
+            invalidUser.push(element);
         }
     });
+    console.log("ValidUsersssssss",validUser);
+    console.log("InvalidUsersssssss",invalidUser);
+    console.log("validusercounr",validUser.length);
+    console.log("Invalidusercounr",invalidUser.length);
     const finalvaliduser = Object.assign({}, validUser);
     const finalinvaliduser = Object.assign({}, invalidUser)
     const printuser = {
@@ -44,5 +46,5 @@ function validateUsers() {
         totalinvaliduser: finalinvaliduser
     };
     console.log(printuser);
-}
+ }
 validateUsers();
