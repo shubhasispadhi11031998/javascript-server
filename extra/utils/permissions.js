@@ -1,21 +1,4 @@
-const permissions ={
-    'getUser1':
-    {
-        all: ['head-trainer'],
-        read: ['trainee', 'trainer'],
-        write: ['trainer'],
-        delete: []
-    },
-    'getUsers2':
-    {
-        all: ['head-trainer'],
-        read: ['trainee', 'trainer'],
-        write: ['trainer'],
-        delete: []
-    }
-};
-
-function hasPermission(moduleName, role, permissionType) {
+export default function hasPermission(moduleName, role, permissionType) {
     if (!moduleName.hasOwnProperty(permissionType)) {
         console.log(`Object not having any ${permissionType} property`);
     }
@@ -26,4 +9,4 @@ function hasPermission(moduleName, role, permissionType) {
         console.log(`${role} can perform ${permissionType} action : false`);
     }
 }
-hasPermission(permissions.getUser1, "trainee", "delete");
+// hasPermission(permissions.getUser1, "trainee", "delete");
