@@ -6,11 +6,15 @@
   "dependencies": {
     "@babel/core": "^7.12.3",
     "@babel/node": "^7.12.1",
-    "@babel/preset-env": "^7.12.1"
+    "@babel/preset-env": "^7.12.1",
+    "nodemon": "^2.0.6"
   },
   "devDependencies": {},
   "scripts": {
-    "test": "babel-node ./index.js"
+    "test": "babel-node ./index.js",
+    "start:extra": "babel-node extra",
+    "start:extraTs": "tsc-watch --project . --onSuccess \"npm run nodemon\"",
+    "nodemon": "nodemon ./dist/index.js"
   },
   "repository": {
     "type": "git",
