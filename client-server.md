@@ -8,7 +8,7 @@ After the virtual server is selected, the obj.conf file for the virtual server c
 
 **AuthTrans (authorization)**
 
-Verify any authorization information (such as name and pagssword) sent in the request.
+Verify any authorization information (such as name and password) sent in the request.
 
 **NameTrans (name)**
 
