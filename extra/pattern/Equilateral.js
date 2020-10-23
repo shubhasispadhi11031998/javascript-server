@@ -1,4 +1,4 @@
-function equilateral(n) 
+export function equilateral(n) 
 { 
   let w1="",w2="";
     for (let i = 0; i < n; i++) 
@@ -16,6 +16,6 @@ function equilateral(n)
       w2=""
     } 
   } 
-  equilateral(10)
+  // equilateral(10)
 
   

@@ -1,4 +1,4 @@
-function diamond(n) 
+export function diamond(n) 
 {
     let w1="",w2="";
     for (let i = 0; i < n; i++) 
@@ -31,4 +31,4 @@ function diamond(n)
       w2="";
     }
 }
-diamond(5)     
+// diamond(5)     
