@@ -1,4 +1,6 @@
 import * as express from 'express';
+import * as bodyParser from 'body-parser';
+import { notFoundHandler, errorHandler } from './libs/routes';
 class Server {
     // tslint:disable-next-line: semicolon
     app
@@ -6,24 +8,39 @@ class Server {
         this.app = express();
     }
     bootstrap() {
-        this.SetupRoutes();
+        this.setupRouts();
+        this.initBodyParser();
         return this;
     }
-    SetupRoutes() {
-        const {app} = this;
-        app.get('/health-check', (req, res, next) => {
-            res.send('i am ok');
+    setupRouts() {
+        const { app } = this;
+
+        app.use((req, res, next) => {
+            console.log('Inside First MidleWare');
+            next();
         });
+
+        app.use('/health-check', (req, res) => {
+            console.log('Inside Second MidleWare');
+            res.send('I am fine');
+        });
+
+        app.use(notFoundHandler);
+        app.use(errorHandler);
+
         return this;
+    }
+    initBodyParser() {
+        this.app.use(bodyParser.json({ type: 'application/*+json' }));
     }
     run() {
-        const {app, config: {PORT}} = this;
+        const { app, config: { PORT } } = this;
         app.listen(PORT, (err) => {
             if (err) {
                 console.log(err);
             }
             console.log(`App is running on port ${PORT}`);
-        // tslint:disable-next-line: semicolon
+            // tslint:disable-next-line: semicolon
         })
     }
 }
