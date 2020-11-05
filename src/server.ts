@@ -3,6 +3,7 @@ import * as bodyParser from 'body-parser';
 import { notFoundHandler, errorHandler } from './libs/routes';
 import routes from './router';
 import mainRouter from './router';
+import Database from './libs/Database';
 class Server {
     // tslint:disable-next-line: semicolon
     app
@@ -30,20 +31,27 @@ class Server {
         app.use(notFoundHandler);
         app.use(errorHandler);
 
-       // return this;
+        // return this;
     }
     initBodyParser() {
         this.app.use(bodyParser.json({ type: 'application/*+json' }));
     }
-    run() {
-        const { app, config: { PORT } } = this;
-        app.listen(PORT, (err) => {
-            if (err) {
-                console.log(err);
-            }
-            console.log(`App is running on port ${PORT}`);
-            // tslint:disable-next-line: semicolon
-        })
+    public run() {
+
+        const { PORT, NODE_ENV, MONGO_URL } = this.config;
+        console.log(this.config)
+        Database.open(MONGO_URL)
+            .then((res) => {
+                console.log("Successfully connected to Mongo");
+                this.app.listen(PORT, (err) => {
+                    if (err) {
+                        console.log(err);
+                    }
+                    console.log(`App is running on port ${PORT}`);
+                });
+            })
+            .catch(err => console.log(err));
     }
+
 }
 export default Server;
