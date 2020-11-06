@@ -3,6 +3,7 @@ import { mongo, Mongoose } from "mongoose";
 import * as mongoose from 'mongoose';
 import { promises } from "fs";
 import { resolve } from "path";
+import SeedData from "./SeedData";
 
 class Database {
     static open(MONGO_URL) {
@@ -15,6 +16,7 @@ class Database {
                     reject(err);
                     return;
                 }
+                SeedData();
                 resolve(null);
             })
             // console.log("Successfully connected to Mongo");
