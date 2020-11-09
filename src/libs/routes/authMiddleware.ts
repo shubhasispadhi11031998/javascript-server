@@ -1,28 +1,44 @@
 // import config from '../../controllers/trainee/validation';
 import * as jwt from 'jsonwebtoken';
-import  {hasPermission}  from '../../libs/permissions';
-import {permissions} from '../../libs/constants';
+import { hasPermission } from '../../libs/permissions';
+import { permissions } from '../../libs/constants';
+import { userModel } from '../../repositories/users/UserModel';
+import bcrypt from 'bcrypt';
 
-export default (module, permissionType) => (req, res, next) => {
+export default () => (req, res, next) => {
     try {
-        console.log('the config is', module, permissionType);
-        console.log('Header is', req.headers['authorization']);
-        const token = req.headers['authorization']
-        const decodeuser = jwt.verify(token, 'qwertyuiopasdfghjklzxcvbnm123456');
-        console.log('User is', decodeuser);
-        if(hasPermission(permissions.getUser1,decodeuser.Role,permissionType))
-        {
-            console.log(`${decodeuser.Role} has permission ${permissionType}: true`);
-            next();
-        }
-        else{
-            throw Error;
-        }
-        
-    } catch (err) {
-        next({
-            error: 'Unauthorized',
-            code: 403
-        })
+        console.log("sdfd")
+        // console.log('reqqqqqqqqqqqqqqqqqq',req.body)
+        const { email, password } = req.body;
+        userModel.findOne({ email: email }, (err, result) => {
+            if (result) {
+                if (password === result.password) {
+                    result.password= bcrypt.hashSync(result.password,10);
+                    console.log('result is', result.password);
+                    const token = jwt.sign({result}, 'qwertyuiopasdfghjklzxcvbnm123456');
+                    console.log(token);
+                    res.send({
+                        data: token,
+                        message: 'Login Permited',
+                        status: 200
+                    });
+                }
+                else {
+                    res.send({
+                        message: 'Password Doesnt Match',
+                        status: 400
+                    });
+                }
+            }
+            else {
+                res.send({
+                    message: 'Email is not Registered',
+                    status: 404
+                });
+            }
+        });
+    }
+    catch (err) {
+        res.send(err);
     }
 }
