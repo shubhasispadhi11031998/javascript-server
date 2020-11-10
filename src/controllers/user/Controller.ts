@@ -1,80 +1,130 @@
-// create a class according to instructions that mention in #39523
-import * as jwt from 'jsonwebtoken';
-import { Request, Response, NextFunction } from 'express';
-import UserRepository from '../../repositories/users/UserRepository';
-import * as bcrypt from 'bcrypt';
-import config from '../../config/configuration';
+import { Request, Response, NextFunction } from "express";
+import {userModel} from '../../repositories/users/UserModel';
+import * as bcrypt from "bcrypt";
+import * as jwt from "jsonwebtoken";
 
 class UserController {
-    static instance: UserController;
+    static instance: UserController
+
     static getInstance() {
-        if ( UserController.instance ) {
+        if (UserController.instance) {
             return UserController.instance;
         }
         UserController.instance = new UserController();
         return UserController.instance;
     }
-    get( req, res, next ) {
-        try {
-            console.log( 'Inside GET method of User controller ' );
 
-            res.send({
-                message: 'User fetchd successfully',
-                data: [
+    me(req: any, res: Response, next: NextFunction) {
+        const { user } = req;
+        // delete user.password;
+        return res.status(200).send({ message: "Me", status: "Ok", data: user });
+    }
+
+    get(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log("Inside get request for user");
+            const data =
+                [
                     {
-                        name: 'User1',
-                        address: 'noida'
+                        name: "user1",
+                        address: "Noida"
                     }
                 ]
-            })
-        } catch (err) {
-            console.log( 'Inside Error', err );
+            res.status(200).send({ message: "successfully fetched users", Data: data });
+        }
+        catch (err) {
+            console.log("Inside error", err);
         }
     }
-    create( req, res, next ) {
-        try {
-            console.log( 'Inside POST method of User controller ' );
 
-            res.send({
-                message: 'User created successfully',
-                data: {
-                    name: 'User1',
-                    address: 'noida'
-                }
-            })
-        } catch (err) {
-            console.log( 'Inside Error', err );
+    create(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log("Inside post request for user");
+            const data =
+                [
+                    {
+                        name: "user1",
+                        address: "Noida"
+                    }
+                ]
+            res.status(200).send({ message: "successfully fetched users", Data: data });
+        }
+        catch (err) {
+            console.log("Inside error", err);
         }
     }
-    update( req, res, next ) {
-        try {
-            console.log( 'Inside Update method of User controller ' );
 
-            res.send({
-                message: 'User updated successfully',
-                data: {
-                    name: 'User1',
-                    address: 'noida'
-                }
-            })
-        } catch (err) {
-            console.log( 'Inside Error', err );
+    update(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log("Inside update request for user");
+            const data =
+                [
+                    {
+                        name: "user1",
+                        address: "Noida"
+                    }
+                ]
+            res.status(200).send({ message: "successfully fetched users", Data: data });
+        }
+        catch (err) {
+            console.log("Inside error", err);
         }
     }
-    delete( req, res, next ) {
-        try {
-            console.log( 'Inside delete method of User controller ' );
 
-            res.send({
-                message: 'User deleted successfully',
-                data: {
-                    name: 'User1',
-                    address: 'noida'
-                }
-            })
-        } catch (err) {
-            console.log( 'Inside Error', err );
+    delete(req: Request, res: Response, next: NextFunction) {
+        try {
+            console.log("Inside delete request for user");
+            const data =
+                [
+                    {
+                        name: "user1",
+                        address: "Noida"
+                    }
+                ]
+            res.status(200).send({ message: "successfully fetched users", Data: data });
         }
+        catch (err) {
+            console.log("Inside error", err);
+        }
+    }
+
+    login(req: Request, res: Response, next: NextFunction) {
+        try {
+
+            const { email, password } = req.body;
+            userModel.findOne({ email: email }, (err, result) => {
+                if (result) {
+                    if (password === result.password) {
+                        result.password = bcrypt.hashSync(result.password, 10);
+                        const token = jwt.sign({ result }, 'qwertyuiopasdfghjklzxcvbnm123456');
+                        console.log(result);
+                        // console.log(token);
+                        res.send({
+                            data: token,
+                            message: 'Login successfully',
+                            status: 200
+                        });
+                    }
+                    else {
+                        res.send({
+                            message: 'Password Doesnt Match',
+                            status: 400
+                        });
+                    }
+                }
+                else {
+                    res.send({
+                        message: 'Email is not Registered',
+                        status: 404
+                    });
+                }
+            });
+        }
+        catch (err) {
+            res.send(err);
+        }
+
     }
 }
+
 export default UserController.getInstance();

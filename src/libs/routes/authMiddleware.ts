@@ -1,44 +1,34 @@
-// import config from '../../controllers/trainee/validation';
-import * as jwt from 'jsonwebtoken';
-import { hasPermission } from '../../libs/permissions';
-import { permissions } from '../../libs/constants';
-import { userModel } from '../../repositories/users/UserModel';
-import bcrypt from 'bcrypt';
+import * as jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+import { hasPermission } from "../../libs/permissions";
+import { permissions } from "../../libs/constants";
+import { error } from "console";
+import IRequest from '../../libs/IRequest';
 
-export default () => (req, res, next) => {
+export default (moduleName: string, permissionType: string) => (req: IRequest, res: Response, next: NextFunction) => {
     try {
-        console.log("sdfd")
-        // console.log('reqqqqqqqqqqqqqqqqqq',req.body)
-        const { email, password } = req.body;
-        userModel.findOne({ email: email }, (err, result) => {
-            if (result) {
-                if (password === result.password) {
-                    result.password= bcrypt.hashSync(result.password,10);
-                    console.log('result is', result.password);
-                    const token = jwt.sign({result}, 'qwertyuiopasdfghjklzxcvbnm123456');
-                    console.log(token);
-                    res.send({
-                        data: token,
-                        message: 'Login Permited',
-                        status: 200
-                    });
-                }
-                else {
-                    res.send({
-                        message: 'Password Doesnt Match',
-                        status: 400
-                    });
-                }
-            }
-            else {
-                res.send({
-                    message: 'Email is not Registered',
-                    status: 404
-                });
-            }
-        });
+        console.log("The config is : ", moduleName, permissionType);
+        console.log("Header is ", req.headers['authorization']);
+        const token = req.headers['authorization'];
+        const secret = 'qwertyuiopasdfghjklzxcvbnm123456';
+        const decodeUser = jwt.verify(token, secret);
+        const role = decodeUser.role;
+        console.log('User', decodeUser);
+
+        if (hasPermission(permissions.getUser1, role, permissionType)) {
+            console.log(`${role} has permission ${permissionType} :true`);
+        }
+        else {
+            next({ error: "unauthorized", message: "Permission denied", status: 403 });
+        }
+        req.user=decodeUser;
+        next();
     }
+
     catch (err) {
-        res.send(err);
+        next({
+            error: "Unauthorized",
+            code: 403
+        })
     }
 }

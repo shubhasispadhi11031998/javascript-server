@@ -7,7 +7,7 @@ export default () => {
         if(res === 0){
             console.log('data seeding in progress');
             userRepository.create({
-                name: 'Head Trainer', 
+                name: 'Head Trainer',
                 role: 'head-trainer', 
                 email: 'headtrainer@successive.tech',
                 password: '12345'
