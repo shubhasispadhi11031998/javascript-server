@@ -1,10 +1,13 @@
 import * as mongoose from 'mongoose';
 import {userModel} from './UserModel';
 import IUserModel from './IUserModel';
-
-export default class UserRepository {
+import VersioningRepository from '../versionable/VersionableRepository';
+export default class UserRepository extends VersioningRepository<IUserModel,mongoose.Model<IUserModel>> {
     public static generateObjectId() {
         return String(mongoose.Types.ObjectId());
+    }
+    constructor(){
+        super(userModel);
     }
     public findOne(query): mongoose.DocumentQuery<IUserModel, IUserModel, {}> {
         return userModel.findOne(query).lean();
@@ -17,6 +20,7 @@ export default class UserRepository {
         const id = UserRepository.generateObjectId();
         const model = new userModel({
             _id: id,
+            originalId:id,
             ...data,
         });
         return model.save();

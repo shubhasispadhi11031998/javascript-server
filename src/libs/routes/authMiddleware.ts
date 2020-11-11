@@ -1,27 +1,33 @@
-// import config from '../../controllers/trainee/validation';
-import * as jwt from 'jsonwebtoken';
-import  {hasPermission}  from '../../libs/permissions';
-import {permissions} from '../../libs/constants';
+import * as jwt from "jsonwebtoken";
+import { Request, Response, NextFunction } from "express";
+import { hasPermission } from "../../libs/permissions";
+import { permissions } from "../../libs/constants";
+import { error } from "console";
+import IRequest from '../../libs/IRequest';
 
-export default (module, permissionType) => (req, res, next) => {
+export default (moduleName: string, permissionType: string) => (req: IRequest, res: Response, next: NextFunction) => {
     try {
-        console.log('the config is', module, permissionType);
-        console.log('Header is', req.headers['authorization']);
-        const token = req.headers['authorization']
-        const decodeuser = jwt.verify(token, 'qwertyuiopasdfghjklzxcvbnm123456');
-        console.log('User is', decodeuser);
-        if(hasPermission(permissions.getUser1,decodeuser.Role,permissionType))
-        {
-            console.log(`${decodeuser.Role} has permission ${permissionType}: true`);
-            next();
+        console.log("The config is : ", moduleName, permissionType);
+        console.log("Header is ", req.headers['authorization']);
+        const token = req.headers['authorization'];
+        const secret = 'qwertyuiopasdfghjklzxcvbnm123456';
+        const decodeUser = jwt.verify(token, secret);
+        const role = decodeUser.role;
+        console.log('User', decodeUser);
+
+        if (hasPermission(permissions.getUser1, role, permissionType)) {
+            console.log(`${role} has permission ${permissionType} :true`);
         }
-        else{
-            throw Error;
+        else {
+            next({ error: "unauthorized", message: "Permission denied", status: 403 });
         }
-        
-    } catch (err) {
+        req.user=decodeUser;
+        next();
+    }
+
+    catch (err) {
         next({
-            error: 'Unauthorized',
+            error: "Unauthorized",
             code: 403
         })
     }
