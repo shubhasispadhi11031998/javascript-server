@@ -5,7 +5,7 @@ import { permissions } from "../../libs/constants";
 import { error } from "console";
 import IRequest from '../../libs/IRequest';
 
-export default (moduleName: string, permissionType: string) => (req: IRequest, res: Response, next: NextFunction) => {
+export default (moduleName: any, permissionType: string) => (req: IRequest, res: Response, next: NextFunction) => {
     try {
         console.log("The config is : ", moduleName, permissionType);
         console.log("Header is ", req.headers['authorization']);
