@@ -12,7 +12,7 @@ UserRouter.route('/')
 // .get( UserController.get)
 .post(authMiddleWare ( permissions.getUser1, 'read' ), UserController.create )
 .put(authMiddleWare ( permissions.getUser1, 'read' ), UserController.update )
-
+.get(authMiddleWare ( permissions.getUser1, 'read' ), UserController.getAll )
 UserRouter.route('/:id')
 .delete( authMiddleWare ( permissions.getUser1, 'read' ), UserController.delete );
 

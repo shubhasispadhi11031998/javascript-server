@@ -2,64 +2,6 @@ import * as mongoose from 'mongoose';
 import { DocumentQuery, Query } from 'mongoose';
 
 export default class VersioningRepository<D extends mongoose.Document, M extends mongoose.Model<D>> {
-    // public static generateObjectId(){
-    //     return String(mongoose.Types.ObjectId());
-    // }
-    // private model: M;
-    // constructor(model) {
-    //     this.model = model;
-    // }
-    // public async create(options: any): Promise<D> {
-    //     const id = VersioningRepository.generateObjectId();
-    //     const model = new this.model({
-    //         ...options,
-    //         _id: id,
-    //         originalId: id,
-    //         createdAt: Date.now()
-    //     });
-    //     return model.save();
-    // }
-    // public count(query: any): Query<number> {
-    //     const finalQuery = { deletedAt: null, ...query };
-    //     return this.model.countDocuments(finalQuery);
-    // }
-    // protected getAll(query: any, projection: any={}, options: any ={}): DocumentQuery<D[], D> {
-    //     const finalQuery ={deletedAt: null, ...query};
-    //     return this.model.find(finalQuery, projection, options);
-    // }
-    // protected findOne(query: any): DocumentQuery<D, D> {
-    //     const finalQuery = { deletedAt: null, ...query};
-    //     return this.model.findOne(finalQuery);
-    // }
-    // protected find(query: any={}, projection: any = {}, options: any = {}):DocumentQuery<D[], D>{
-    //     const finalQuery = { deletedAt: null, ...query}
-    //     return this.model.find(finalQuery, projection, options);
-    // }
-    // protected invalidate(id: any): DocumentQuery<D, D> {
-    //     return this.model.update({ originalId: id, deletedAt: null}, {})
-    // }
-    // protected async update(data: any): Promise<D> {
-    //     console.log('Looking for previous valid document');
-    //     const prev = this.findOne({originalId: data.originalId, deletedAt: null,});
-    //         console.log('Prev: ',prev);
-    //         if(prev) {
-    //             this.invalidate(data.originalId);
-    //         }else{
-    //             return null;
-    //         }
-    //         console.log('Data: ', data);
-    //         const newData = Object.assign(JSON.parse(JSON.stringify(prev),data));
-    //         console.log('New Data: ',newData);
-    //         newData._id = VersioningRepository.generateObjectId();
-    //         delete newData.deletedAt;
-    //         const model = new this.model(newData);
-    //         return model.save();
-    // }
-
-
-
-
-
     private model: M;
 
     constructor(model) {
@@ -95,6 +37,29 @@ export default class VersioningRepository<D extends mongoose.Document, M extends
         return await this.model.findOne(data);
     }
 
+    public async getallTrainee(skipDefined: number, limitDefined: number, sort: boolean) {
+        if (sort) {
+            const fetchData = await this.model.find({ deletedAt: null })
+                .skip(skipDefined)
+                .limit(limitDefined)
+                .sort({ name: 1, email: 1 });
+            const count = await this.model.find({ deletedAt: null })
+                .countDocuments();
+
+            const arr = [fetchData, count];
+            return arr;
+        } else {
+            const fetchData = await this.model.find({ deletedAt: null })
+                .skip(skipDefined)
+                .limit(limitDefined)
+                .sort({ createdAt: -1 });
+            const count = await this.model.find({ deletedAt: null })
+                .countDocuments();
+            const arr = [fetchData, count];
+            return arr;
+        }
+    }
+
     public async update(id: string, dataToUpdate: any, updator) {
 
         let originalData;
@@ -116,7 +81,7 @@ export default class VersioningRepository<D extends mongoose.Document, M extends
                 };
 
                 const newData = Object.assign(JSON.parse(JSON.stringify(originalData)), dataToUpdate);
-                console.log('newwwwwwwwwwwww',newData);
+                console.log('newwwwwwwwwwwww', newData);
                 newData._id = newId;
                 newData.createdAt = Date.now();
 
@@ -129,7 +94,7 @@ export default class VersioningRepository<D extends mongoose.Document, M extends
                             return res;
                     });
 
-               return this.model.create(newData);
+                return this.model.create(newData);
             });
     }
     public async delete(id: string, remover: string) {
