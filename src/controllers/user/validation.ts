@@ -29,39 +29,43 @@ let config =
             in: ['params']
         }
     },
-    get:
-    {
-        skip:
-        {
+    get: {
+        skip: {
             required: false,
-            default: 0,
+            default: 1,
             number: true,
             in: ['query'],
             errorMessage: 'Skip is invalid',
         },
-        limit:
-        {
+        limit: {
             required: false,
             default: 10,
             number: true,
             in: ['query'],
             errorMessage: 'Limit is invalid',
+        },
+        sort: {
+            required: false,
+            boolean: true,
+            in: ['query'],
+            errorMessage: 'Sort is invalid',
         }
     },
     update:
-    {
-        id:
         {
-            required: true,
-            string: true,
-            in: ['body']
-        },
-        dataToUpdate: {
-            in: ['body'],
-            required: true, isObject: true,
-            custom: function (dataToUpdate) { },
-        }
-    }
-}
+            id:
+            {
+                required: true,
+                string: true,
+                in: ['body']
+            },
+            dataToUpdate: {
+                in: ['body'],
+                required: true,
+                isObject: true,
+                // custom: function (dataToUpdate) { },
 
+            }
+        }
+}
 export default config;

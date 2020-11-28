@@ -1,34 +1,39 @@
 import * as mongoose from 'mongoose';
-import {userModel} from './UserModel';
+import { userModel } from './UserModel';
 import IUserModel from './IUserModel';
 import VersioningRepository from '../versionable/VersionableRepository';
-export default class UserRepository extends VersioningRepository<IUserModel,mongoose.Model<IUserModel>> {
+export default class UserRepository extends VersioningRepository<IUserModel, mongoose.Model<IUserModel>> {
     public static generateObjectId() {
         return String(mongoose.Types.ObjectId());
     }
-    constructor(){
+    constructor() {
         super(userModel);
     }
-    public findOne(query): mongoose.DocumentQuery<IUserModel, IUserModel, {}> {
-        return userModel.findOne(query).lean();
+    public createUser(data, creator) {
+        return super.create(data, creator);
     }
-    public find(query, projection ?:any, options ?:any): any {
-        return userModel.find(query, projection, options)    
+
+    public updateUser(id, data, updator) {
+        return super.update(id, data, updator);
     }
-    public create(data: any): Promise<IUserModel> {
-        console.log('UserRepository:: create', data);
-        const id = UserRepository.generateObjectId();
-        const model = new userModel({
-            _id: id,
-            originalId:id,
-            ...data,
-        });
-        return model.save();
+
+    public getUser(data) {
+        return super.getUser(data);
     }
-    // public update(data: any): Promise<IUserModel>{
-    //     console.log('USerRepository:: update', data);
-    //     return userModel.update(data);
-    // }
-    public count(){
-        return userModel.countDocuments();    }
+
+    public getallTrainee(skip, limit, sort) {
+        return super.getallTrainee(skip, limit, sort);
+    }
+
+    public deleteData(id, remover) {
+        return super.delete(id, remover);
+    }
+
+    public findone(data) {
+        return super.findOne(data);
+    }
+
+    public countData() {
+        return super.count();
+    }
 }
