@@ -1,61 +1,3 @@
-// import * as express from 'express';
-// import * as bodyParser from 'body-parser';
-// import { notFoundHandler, errorHandler } from './libs/routes';
-// import routes from './router';
-// import mainRouter from './router';
-// import Database from './libs/Database';
-// class Server {
-//     // tslint:disable-next-line: semicolon
-//     app
-//     constructor(private config) {
-//         this.app = express();
-//     }
-//     bootstrap() {
-//         this.setupRouts();
-//         this.initBodyParser();
-//         return this;
-//     }
-//     setupRouts() {
-//         const { app } = this;
-
-//         // app.use((req, res, next) => {
-//         //     console.log('Inside First MidleWare');
-//         //     next();
-//         // });
-
-//         app.use('/health-check', (req, res) => {
-//             console.log('Inside Second MidleWare');
-//             res.send('I am fine');
-//         });
-//         app.use('/api', mainRouter);
-//         app.use(notFoundHandler);
-//         app.use(errorHandler);
-
-//         // return this;
-//     }
-//     initBodyParser() {
-//         this.app.use(bodyParser.json());
-//     }
-//     public run() {
-
-//         const { PORT, NODE_ENV, MONGO_URL } = this.config;
-//         console.log(this.config)
-//         Database.open(MONGO_URL)
-//             .then((res) => {
-//                 console.log("Successfully connected to Mongo");
-//                 this.app.listen(PORT, (err) => {
-//                     if (err) {
-//                         console.log(err);
-//                     }
-//                     console.log(`App is running on port ${PORT}`);
-//                 });
-//             })
-//             .catch(err => console.log(err));
-//     }
-
-// }
-// export default Server;
-
 import * as express from "express";
 import { Request, Response, NextFunction } from "express";
 import * as bodyParser from "body-parser";
@@ -63,6 +5,8 @@ import { notFoundHandler, errorHandler } from './libs/routes';
 import { IConfig } from "./config/IConfig";
 import mainRouter from "./router";
 import Database from "./libs/Database";
+import * as swaggerUi from 'swagger-ui-express';
+import * as swaggerJsDoc from 'swagger-jsdoc';
 
 class Server {
     app: express.Express
@@ -77,33 +21,58 @@ class Server {
         return this;
     }
 
+    initSwagger = () => {
+        const options = {
+            definition: {
+                info: {
+                    title: 'JavaScript-Server API Swagger',
+                    version: '1.0.0',
+                },
+                securityDefinitions: {
+                    Bearer: {
+                        type: 'apiKey',
+                        name: 'Authorization',
+                        in: 'headers'
+                    }
+                }
+            },
+            basePath: '/api',
+            swagger: '4.1',
+            apis: ['./src/controllers/**/routes.ts'],
+        };
+        const swaggerSpec = swaggerJsDoc(options);
+        return swaggerSpec;
+    }
+
     setupRouts() {
         const { app } = this;
-        app.use((req: Request, res: Response, next: NextFunction) => {
+        this.app.use((req: Request, res: Response, next: NextFunction) => {
             console.log('Inside First MidleWare');
             next();
         });
 
-        app.use('/health-check', (req: Request, res: Response, next: NextFunction) => {
+        this.app.use('/health-check', (req: Request, res: Response, next: NextFunction) => {
             console.log('Inside Second MidleWare');
             res.send('I am OKK');
 
         });
 
         this.app.use('/api', mainRouter);
-        app.use('/health-check', (req: Request, res: Response) => {
-            console.log('Inside Second MidleWare');
-            res.send('I am fine');
-        });
+        this.app.use('/api-doc', swaggerUi.serve, swaggerUi.setup(this.initSwagger()));
+        // app.use('/health-check', (req: Request, res: Response) => {
+        //     console.log('Inside Second MidleWare');
+        //     res.send('I am fine');
+        // });
 
-        app.use(notFoundHandler);
-        app.use(errorHandler);
+        this.app.use(notFoundHandler);
+        this.app.use(errorHandler);
 
         return this;
     }
 
     initBodyParser() {
         this.app.use(bodyParser.json());
+        this.app.use(bodyParser.urlencoded({ extended: true }));
     }
 
 

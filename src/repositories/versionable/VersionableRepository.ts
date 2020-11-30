@@ -20,6 +20,10 @@ export default class VersioningRepository<D extends mongoose.Document, M extends
         return await this.model.findOne(query).lean();
     }
 
+    public find(query = {}): DocumentQuery<D[], D> {
+        return this.model.find(query);
+    }
+
     public async create(data: any, creator): Promise<D> {
         const id = VersioningRepository.generateObjectId();
 

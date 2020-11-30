@@ -18,16 +18,22 @@ class UserController {
     }
 
     public async get(req: Request, res: Response, next: NextFunction) {
-
+        
         const user = new UserRepository();
+        const searchField = req.query.srch;
         const { id } = req.query;
-
-        await user.getUser({ id })
+        if(searchField){
+        user.find({
+            '$or': [
+                {name: {$regex: searchField, $options: '$i' } },
+                {email: {$regex: searchField, $options: '$i'} }
+            ]
+        });
+            await user.getUser({ id })
             .then((data) => {
                 if (data === null) {
                     throw '';
                 }
-
                 res.status(200).send({
                     message: 'User Fetched successfully',
 
@@ -35,7 +41,6 @@ class UserController {
 
                     code: 200
                 });
-
             })
             .catch(err => {
                 console.log(err);
@@ -44,7 +49,7 @@ class UserController {
                     code: 500
                 });
             });
-
+        }
     }
     public async getAll(req: Request, res: Response, next: NextFunction) {
         let skip: number;
@@ -155,6 +160,27 @@ class UserController {
         const data = req.user;
         res.json({
             data
+        });
+    }
+    public async search(req: IRequest, res: Response, next: NextFunction){
+        const searchField = req.query.srch
+        const user = new UserRepository;
+        user.find({
+            '$or': [
+                {name: {$regex: searchField, $options: '$i' } },
+                {email: {$regex: searchField, $options: '$i'} }
+            ]
+        })
+
+        .then(data=>{
+            res.send(data);
+        })
+
+        .catch ((err) => {
+            res.send({
+                message: 'no results',
+                code: 404
+            });
         });
     }
 
