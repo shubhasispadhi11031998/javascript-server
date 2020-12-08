@@ -1,6 +1,5 @@
 function tri(n,m)
 {
-    let a="";
     let aa="";
     for(i=0;i<=n;i++)
     {

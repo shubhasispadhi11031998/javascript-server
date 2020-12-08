@@ -55,13 +55,13 @@ console.log(count);
 console.log(animals);
 
 animals.pop()
-console.log(animals);
+console.log(animals);*/
 
 //Array.shift()
 const array1 = [1, 2, 3, 4, 5, 6];
 const firstElement = array1.shift();
 console.log(array1);
-console.log(firstElement);*/
+console.log(firstElement);
 
 //Array.slice()
 const animals = ['ant', 'bison', 'camel', 'duck', 'elephant'];
