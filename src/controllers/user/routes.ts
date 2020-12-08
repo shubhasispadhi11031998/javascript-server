@@ -13,6 +13,7 @@ UserRouter.route('/')
 .post(authMiddleWare ( permissions.getUser1, 'read' ), UserController.create )
 .put(authMiddleWare ( permissions.getUser1, 'read' ), UserController.update )
 .get(authMiddleWare ( permissions.getUser1, 'read' ), UserController.getAll )
+.get(authMiddleWare ( permissions.getUser1, 'read' ), UserController.search )
 UserRouter.route('/:id')
 .delete( authMiddleWare ( permissions.getUser1, 'read' ), UserController.delete );
 
